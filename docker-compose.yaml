@@ -1,0 +1,64 @@
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    restart: always
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - '6379:6379'
+    restart: always
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ./apps/api-gateway/Dockerfile
+    container_name: api-gateway
+    ports:
+      - '4000:4000'
+    depends_on:
+      - upload-service
+    environment:
+      - UPLOAD_SERVICE_URL=upload-service:50051
+    volumes:
+      - ./apps/api-gateway:/app/apps/api-gateway
+      - /app/apps/api-gateway/node_modules # 🚫 Prevent node_modules from overwriting
+      - .uploads:/app/uploads # If api-gateway needs access to uploads
+    # Remove node_modules volume and local mount to avoid conflicts
+
+  upload-service:
+    build:
+      context: .
+      dockerfile: ./apps/upload-service/Dockerfile
+    container_name: upload-service
+    ports:
+      - '50051:50051'
+    depends_on:
+      - rabbitmq
+      - redis
+    volumes:
+      - ./apps/upload-service:/app/apps/upload-service
+      - /app/apps/upload-service/node_modules # 🚫 Prevent node_modules from overwriting
+      - ./uploads:/app/uploads
+    # Remove node_modules volume and local mount
+
+  transcoding-service:
+    build:
+      context: .
+      dockerfile: ./apps/transcoding-service/Dockerfile
+    container_name: transcoding-service
+    ports:
+      - '50051:50051'
+    depends_on:
+      - rabbitmq
+      - redis
+    volumes:
+      - ./apps/transcoding-service:/app/apps/transcoding-service
+      - /app/apps/transcoding-service/node_modules
+      - ./uploads:/app/uploads
+    # Remove node_modules volume and local mount
