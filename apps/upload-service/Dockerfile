@@ -21,7 +21,7 @@ RUN pnpm install --filter upload-service --prod --frozen-lockfile
 # Stage 3: Runtime
 FROM base AS runtime
 WORKDIR /app
-RUN apk add --no-cache ffmpeg
+
 # 1. Copy shared directories
 COPY --from=deps /app/packages /app/packages
 COPY --from=deps /app/node_modules /app/node_modules
@@ -30,6 +30,7 @@ COPY --from=deps /app/node_modules /app/node_modules
 # COPY --from=deps /app/apps/upload-service /app/apps/upload-service
 
 COPY --from=deps /app/apps/upload-service/node_modules /app/apps/upload-service/node_modules
+RUN apk add --no-cache ffmpeg
 
 EXPOSE 50051
 WORKDIR /app/apps/upload-service

@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+service StreamingService {
+  rpc IsVideoReady (VideoRequest) returns (VideoResponse);
+  rpc UpdateVideoMetadata (NotifyRequest) returns (NotifyResponse); // New RPC method
+}
+
+message VideoRequest {
+  string videoId = 1;
+}
+
+message VideoResponse {
+  bool isReady = 1;
+}
+
+message NotifyRequest {
+  string videoId = 1;
+  string quality = 2;
+  string status  = 3;
+  string filePath = 4;
+}
+
+message NotifyResponse {
+  bool success = 1;
+}

@@ -11,6 +11,7 @@ message UploadRequest {
   
 
 message UploadResponse {  
-    string message = 1;  
+    string videoId = 1;
+    string message = 2;  
   }
   

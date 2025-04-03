@@ -4,7 +4,7 @@ import fs from 'fs'
 import amqplib from 'amqplib'
 import Redis from 'ioredis'
 import ffmpeg from 'fluent-ffmpeg'
-
+import { v4 as uuidv4 } from 'uuid'
 const PROTO_PATH = '../../packages/proto/upload.proto'
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   keepCase: true,
@@ -58,10 +58,11 @@ function extractMetadata(filePath) {
   return new Promise((resolve, reject) => {
     ffmpeg.ffprobe(filePath, (err, metadata) => {
       if (err) return reject(err)
-
+      const videoId = uuidv4()
       const { format, streams } = metadata
       const videoStream = streams.find(s => s.codec_type === 'video') || {}
       resolve({
+        videoId,
         filePath,
         size: format.size,
         duration: format.duration,
@@ -76,7 +77,7 @@ function extractMetadata(filePath) {
 // Define the Upload Service
 const uploadService = {
   UploadVideo: (call, callback) => {
-    const filePath = `../../uploads/video_${Date.now()}.mp4`
+    const filePath = `../../uploads/raw/video_${Date.now()}.mp4`
     const writeStream = fs.createWriteStream(filePath)
 
     call.on('data', chunk => {
@@ -97,8 +98,11 @@ const uploadService = {
 
         // Publish event to RabbitMQ
         await publishToQueue(metadata)
-
-        callback(null, { message: 'Upload successful!' })
+        console.log(metadata.videoId)
+        callback(null, {
+          videoId: metadata.videoId,
+          message: 'Upload successful!'
+        })
       } catch (error) {
         console.error('❌ [Metadata Extraction] Error:', error)
         callback(error)

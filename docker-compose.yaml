@@ -13,6 +13,14 @@ services:
     ports:
       - '6379:6379'
     restart: always
+  redisinsight:
+    image: redislabs/redisinsight:latest
+    container_name: redisinsight
+    ports:
+      - '8001:8001'
+    restart: always
+    depends_on:
+      - redis
 
   api-gateway:
     build:
@@ -28,8 +36,7 @@ services:
     volumes:
       - ./apps/api-gateway:/app/apps/api-gateway
       - /app/apps/api-gateway/node_modules # 🚫 Prevent node_modules from overwriting
-      - .uploads:/app/uploads # If api-gateway needs access to uploads
-    # Remove node_modules volume and local mount to avoid conflicts
+      - ./uploads:/app/uploads
 
   upload-service:
     build:
@@ -52,13 +59,25 @@ services:
       context: .
       dockerfile: ./apps/transcoding-service/Dockerfile
     container_name: transcoding-service
-    ports:
-      - '50051:50051'
     depends_on:
       - rabbitmq
       - redis
     volumes:
       - ./apps/transcoding-service:/app/apps/transcoding-service
       - /app/apps/transcoding-service/node_modules
+      - ./uploads:/app/uploads
+    # Remove node_modules volume and local mount
+
+  streaming-service:
+    build:
+      context: .
+      dockerfile: ./apps/streaming-service/Dockerfile
+    container_name: streaming-service
+    depends_on:
+      - rabbitmq
+      - redis
+    volumes:
+      - ./apps/streaming-service:/app/apps/streaming-service
+      - /app/apps/streaming-service/node_modules
       - ./uploads:/app/uploads
     # Remove node_modules volume and local mount
