@@ -13,7 +13,7 @@ This project is a lightweight video streaming system built with modern technolog
 
 ## Architecture
 
-![System Architecture](architecture.png)
+![System Architecture](./ProjectArchitecture.png)
 
 The system follows this flow:
 
@@ -32,6 +32,24 @@ The system follows this flow:
 
 ---
 
-## Project Structure
+---
 
-![The Project Architecture](./ProjectArchitecture.png)
+## Setup Instructions
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/FizanMuhammedFaisal/VideoTranscodingMicroservice.git
+cd VideoTranscodingMicroservice
+
+```
+
+### 2. Install Dependencies
+
+Using pnpm in a Turborepo setup:
+
+```bash
+pnpm install
+```
+
+This installs dependencies for all apps and packages defined in pnpm-workspace.yaml.
