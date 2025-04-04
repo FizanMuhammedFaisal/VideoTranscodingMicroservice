@@ -15,14 +15,46 @@ This project is a lightweight video streaming system built with modern technolog
 
 ![System Architecture](./ProjectArchitecture.png)
 
-The system follows this flow:
+### Workflow
 
-1. User uploads a video via React UI → API Gateway → Upload Service.
-2. Upload Service saves the file and queues transcoding tasks in RabbitMQ.
-3. Transcoding Service processes videos and updates Streaming Service.
-4. User streams videos via React UI → API Gateway → Streaming Service.
+1. **Upload**:
+   - User uploads a video via UI → API Gateway (HTTP POST) → Upload Service (gRPC).
+   - Upload Service saves the video to ./uploads/, stores metadata in Redis, and pushes tasks (e.g., 480p, 720p) to RabbitMQ.
+2. **Scaling**:
+   - Monitor script checks RabbitMQ transcode-queue every 10 seconds.
+   - If tasks > 5, adds workers (up to 8); if < 2, reduces to 1 (min).
+3. **Transcoding**:
+   - Transcoding Service workers (PM2 instances) consume tasks from RabbitMQ, run FFmpeg, save outputs to ./uploads/, and update Streaming Service via gRPC.
+4. **Streaming**:
+   - User requests video via UI → API Gateway (HTTP GET) → Streaming Service (gRPC) → Fetches metadata from Redis, returns file paths → UI displays video options.
 
 ---
+
+### Mermaid Diagram
+
+Here’s the complete system in Mermaid syntax (paste into [mermaid.live](https://mermaid.live/) to visualize):
+
+mermaid
+
+CollapseWrapCopy
+
+`graph TD
+    A[User UI<br>HTML + JS] -->|HTTP POST /upload| B(API Gateway<br>Express + Multer)
+    B -->|gRPC UploadVideo| C(Upload Service)
+    C -->|Store File| G[Local Storage<br>./uploads/]
+    C -->|Store Metadata| D[Redis<br>Metadata Cache]
+    C -->|Publish Tasks| E[RabbitMQ<br>transcode-exchange<br>transcode-queue]
+    H[Monitor Script<br>PM2 Controller] -->|Check Queue Size| E
+    H -->|Scale Instances| F[Transcoding Service<br>PM2 Instances<br>FFmpeg]
+    E -->|Distribute Tasks| F
+    F -->|Save Files| G
+    F -->|gRPC UpdateMetadata| I(Streaming Service)
+    I -->|Update Metadata| D
+    A -->|HTTP GET /stream| B
+    B -->|gRPC StreamVideo| I
+    I -->|Fetch Metadata| D
+    I -->|Return File Paths| B
+    B -->|Serve Video Links| A`
 
 ## Prerequisites
 
