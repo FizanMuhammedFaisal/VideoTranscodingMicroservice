@@ -132,7 +132,7 @@ const VideoUpload = () => {
       )}
 
       {videoData && (
-        <div className='mt-6 w-full max-w-3xl'>
+        <div className='mt-6 w-full '>
           <VideoPlayer videoId={videoData} />
         </div>
       )}

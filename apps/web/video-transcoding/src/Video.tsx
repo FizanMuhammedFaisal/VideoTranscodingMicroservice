@@ -9,26 +9,24 @@ const VideoPlayer = ({ videoId }: { videoId: string | null }) => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [isInitialized, setIsInitialized] = useState(false)
 
-  // Initialize player only once
   useEffect(() => {
     if (!videoId || !videoRef.current || isInitialized) return
 
-    const player = videojs(
-      videoRef.current,
-      {
-        controls: false,
+    console.log('Initializing Video.js...')
+
+    setTimeout(() => {
+      if (!videoRef.current) return // Double check it's in the DOM
+      const player = videojs(videoRef.current, {
+        controls: true,
         autoplay: false,
         preload: 'auto',
-        fluid: true,
+        fluid: false, // Disable fluid to test
         responsive: true
-      },
-      () => {
-        console.log('Player initialized')
-        setIsInitialized(true)
-      }
-    )
+      })
 
-    playerRef.current = player
+      playerRef.current = player
+      setIsInitialized(true)
+    }, 100) // Small delay to ensure it's in the DOM
 
     return () => {
       if (playerRef.current && !playerRef.current.isDisposed()) {
@@ -37,7 +35,7 @@ const VideoPlayer = ({ videoId }: { videoId: string | null }) => {
         setIsInitialized(false)
       }
     }
-  }, [videoId]) // Only depends on videoId, not quality
+  }, [videoId]) // Only run when `videoId` changes
 
   // Update source when quality or videoId changes
   useEffect(() => {
@@ -52,7 +50,7 @@ const VideoPlayer = ({ videoId }: { videoId: string | null }) => {
 
     playerRef.current.src(newSource)
     playerRef.current.load()
-
+    playerRef.current.tech().trigger('resize')
     // Restore playing state if it was playing
     if (wasPlaying) {
       playerRef.current
@@ -82,7 +80,7 @@ const VideoPlayer = ({ videoId }: { videoId: string | null }) => {
           <div className='relative aspect-video'>
             <video
               ref={videoRef}
-              className='video-js w-full h-full object-contain'
+              className='video-js relative  w-full h-full object-contain'
               playsInline
             />
           </div>
