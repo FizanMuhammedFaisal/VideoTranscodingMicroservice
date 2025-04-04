@@ -36,10 +36,8 @@ Here’s the complete system in Mermaid syntax (paste into [mermaid.live](https:
 
 mermaid
 
-CollapseWrapCopy
-
-`graph TD
-    A[User UI<br>HTML + JS] -->|HTTP POST /upload| B(API Gateway<br>Express + Multer)
+```bash
+ A[User UI<br>HTML + JS] -->|HTTP POST /upload| B(API Gateway<br>Express + Multer)
     B -->|gRPC UploadVideo| C(Upload Service)
     C -->|Store File| G[Local Storage<br>./uploads/]
     C -->|Store Metadata| D[Redis<br>Metadata Cache]
@@ -54,7 +52,9 @@ CollapseWrapCopy
     B -->|gRPC StreamVideo| I
     I -->|Fetch Metadata| D
     I -->|Return File Paths| B
-    B -->|Serve Video Links| A`
+    B -->|Serve Video Links| A
+
+```
 
 ## Prerequisites
 
