@@ -25,10 +25,7 @@ jobs:
         uses: pnpm/action-setup@v2
         with:
           version: 10.7.0
-          run_install: false
-
-      - name: Export pnpm path
-        run: echo "${PNPM_HOME}" >> $GITHUB_PATH
+          standalone: true
 
       - name: Verify pnpm Installation
         run: pnpm --version
