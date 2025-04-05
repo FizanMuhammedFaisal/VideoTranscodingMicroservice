@@ -2,9 +2,11 @@ name: Run Tests
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   test:
@@ -18,16 +20,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: 'npm' # ← use npm cache for pnpm install step (or remove this)
 
       - name: Install pnpm
         run: npm install -g pnpm
-
-      - name: Enable pnpm cache
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          cache: 'pnpm' # ← now it works since pnpm exists
 
       - name: Verify pnpm Installation
         run: pnpm --version
