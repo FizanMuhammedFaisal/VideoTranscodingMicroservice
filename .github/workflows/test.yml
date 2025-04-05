@@ -21,8 +21,11 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install pnpm 10.7
-        run: npm install -g pnpm@10.7.0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.7.0
+          run_install: false
 
       - name: Verify pnpm Installation
         run: pnpm --version
