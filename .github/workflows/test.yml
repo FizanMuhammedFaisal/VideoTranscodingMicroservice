@@ -20,20 +20,20 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
+          cache: 'pnpm'
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         with:
-          version: 10.7.0
-          standalone: true
+          version: 10.7.0 # Explicitly set the desired version
+          standalone: true # Keep standalone mode if preferred
+          dest: ~/setup-pnpm # Custom install location
 
-      - name: Set up PNPM from action
-        run: echo "${PNPM_HOME}" >> $GITHUB_PATH
-        env:
-          PNPM_HOME: ~/setup-pnpm/node_modules/.bin
+      - name: Add pnpm to PATH
+        run: echo "~/setup-pnpm/node_modules/.bin" >> $GITHUB_PATH
 
       - name: Verify pnpm Installation
-        run: pnpm --version
+        run: pnpm --version # Should output 10.7.0
 
       - name: Install Dependencies
         run: pnpm install
