@@ -10,7 +10,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
       - name: Checkout Code
@@ -20,24 +20,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
+          cache: 'pnpm'
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v3
         with:
-          version: 10.7.0
-          standalone: true
-          dest: ~/setup-pnpm
-
-      - name: Add pnpm to PATH
-        run: |
-          echo "~/setup-pnpm/node_modules/.bin" >> $GITHUB_PATH
-          export PATH="~/setup-pnpm/node_modules/.bin:$PATH"
-          echo "Updated PATH: $PATH"
+          version: 10.7.0 # Your required version
 
       - name: Verify pnpm Installation
-        run: |
-          which pnpm  # Should point to ~/setup-pnpm/node_modules/.bin/pnpm
-          pnpm --version  # Should output 10.7.0
+        run: pnpm --version # Should output 10.7.0
 
       - name: Install Dependencies
         run: pnpm install
