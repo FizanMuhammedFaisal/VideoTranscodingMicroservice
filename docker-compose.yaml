@@ -6,6 +6,11 @@ services:
       - '5672:5672'
       - '15672:15672'
     restart: always
+    healthcheck:
+      test: ['CMD', 'rabbitmq-diagnostics', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:latest
@@ -46,8 +51,10 @@ services:
     ports:
       - '50051:50051'
     depends_on:
-      - rabbitmq
-      - redis
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_started
     volumes:
       - ./apps/upload-service:/app/apps/upload-service
       - /app/apps/upload-service/node_modules # 🚫 Prevent node_modules from overwriting
@@ -60,8 +67,10 @@ services:
       dockerfile: ./apps/transcoding-service/Dockerfile
     container_name: transcoding-service
     depends_on:
-      - rabbitmq
-      - redis
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_started
     volumes:
       - ./apps/transcoding-service:/app/apps/transcoding-service
       - /app/apps/transcoding-service/node_modules
