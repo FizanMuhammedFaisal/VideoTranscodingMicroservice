@@ -27,6 +27,9 @@ jobs:
           version: 10.7.0
           run_install: false
 
+      - name: Export pnpm path
+        run: echo "${PNPM_HOME}" >> $GITHUB_PATH
+
       - name: Verify pnpm Installation
         run: pnpm --version
 
