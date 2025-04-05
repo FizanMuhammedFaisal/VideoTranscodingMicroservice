@@ -27,6 +27,11 @@ jobs:
           version: 10.7.0
           standalone: true
 
+      - name: Set up PNPM from action
+        run: echo "${PNPM_HOME}" >> $GITHUB_PATH
+        env:
+          PNPM_HOME: ~/setup-pnpm/node_modules/.bin
+
       - name: Verify pnpm Installation
         run: pnpm --version
 
