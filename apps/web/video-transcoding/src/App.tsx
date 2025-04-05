@@ -23,7 +23,7 @@ const VideoUpload = () => {
     setLoading(true) // Show loading spinner
 
     const eventSource = new EventSource(
-      `http://localhost:4000/events/${videoId}`
+      `${import.meta.env.VITE_BACKEND_URL}/events/${videoId}`
     )
 
     eventSource.onmessage = () => {
@@ -53,7 +53,7 @@ const VideoUpload = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:4000/upload',
+        `${import.meta.env.VITE_BACKEND_URL}/upload`,
         formData,
         {
           headers: {

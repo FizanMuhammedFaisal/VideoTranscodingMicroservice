@@ -42,7 +42,7 @@ const VideoPlayer = ({ videoId }: { videoId: string | null }) => {
     if (!videoId || !playerRef.current || !isInitialized) return
 
     const newSource = {
-      src: `http://localhost:4000/videos/hls/${videoId}/${quality}/index.m3u8`,
+      src: `${import.meta.env.VITE_BACKEND_URL}/videos/hls/${videoId}/${quality}/index.m3u8`,
       type: 'application/x-mpegURL'
     }
 
