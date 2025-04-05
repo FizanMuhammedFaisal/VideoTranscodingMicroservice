@@ -66,6 +66,53 @@ mermaid
 
 ---
 
+## structure
+
+.
+├── ProjectArchitecture.png
+├── README.md
+├── apps
+│   ├── api-gateway
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── monitor
+│   ├── streaming-service
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── transcoding-service
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   ├── upload-service
+│   │   ├── Dockerfile
+│   │   ├── index.js
+│   │   └── package.json
+│   └── web
+│   └── video-transcoding
+├── docker-compose.yaml
+├── package.json
+├── packages
+│   ├── eslint-config
+│   │   ├── README.md
+│   │   ├── base.js
+│   │   ├── next.js
+│   │   ├── package.json
+│   │   └── react-internal.js
+│   ├── proto
+│   │   ├── streaming.proto
+│   │   └── upload.proto
+│   ├── typescript-config
+│   │   ├── base.json
+│   │   ├── nextjs.json
+│   │   ├── package.json
+│   │   └── react-library.json
+│   └── utils
+├── pnpm-lock.yaml
+├── pnpm-workspace.yaml
+└── turbo.json
+
 ## Setup Instructions
 
 ### 1. Clone the Repository
@@ -85,3 +132,7 @@ pnpm install
 ```
 
 This installs dependencies for all apps and packages defined in pnpm-workspace.yaml.
+
+pnpm test --filter=... --since
+
+for testing only the changed services
