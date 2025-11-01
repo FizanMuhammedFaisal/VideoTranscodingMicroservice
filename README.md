@@ -37,6 +37,7 @@ Here’s the complete system in Mermaid syntax (paste into [mermaid.live](https:
 mermaid
 
 ```mermaid
+flowchart TD
  A[User UI<br>HTML + JS] -->|HTTP POST /upload| B(API Gateway<br>Express + Multer)
     B -->|gRPC UploadVideo| C(Upload Service)
     C -->|Store File| G[Local Storage<br>./uploads/]
