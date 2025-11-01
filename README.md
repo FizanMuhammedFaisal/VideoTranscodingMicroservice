@@ -36,7 +36,7 @@ Here’s the complete system in Mermaid syntax (paste into [mermaid.live](https:
 
 mermaid
 
-```bash
+```mermaid
  A[User UI<br>HTML + JS] -->|HTTP POST /upload| B(API Gateway<br>Express + Multer)
     B -->|gRPC UploadVideo| C(Upload Service)
     C -->|Store File| G[Local Storage<br>./uploads/]
@@ -67,7 +67,7 @@ mermaid
 ---
 
 ## structure
-
+```
 .
 ├── ProjectArchitecture.png
 ├── README.md
@@ -112,7 +112,7 @@ mermaid
 ├── pnpm-lock.yaml
 ├── pnpm-workspace.yaml
 └── turbo.json
-
+```
 ## Setup Instructions
 
 ### 1. Clone the Repository
